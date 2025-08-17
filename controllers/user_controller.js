@@ -65,9 +65,16 @@ let userLogin=async(req,res)=>{
    try{
    let user= await userModel.find({email:email});
    if(user.length!=0){
-       let match= await bcrypt.compare(password,user[0].password);
-       console.log(match);
-
+    let match;
+    if(user[0].userType=='admin'){
+        match= user[0].password===password
+        console.log(`pwd from user =${password} and from db= ${user[0].password}`)
+         console.log("if= ",match);
+    }else {
+          console.log("else= ",match);
+         match= await bcrypt.compare(password,user[0].password);
+    }
+    
      if(user[0].status===0){
         res.json({status:false,error:'you have been blocked By The Admin!'});
         return;
